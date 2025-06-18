@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passive Voice Practice Roulettes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(3600deg); }
+        }
+        .animate-fast-spin {
+            animation: spin 0.1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef } = React;
+
+        const PassiveVoiceRoulettes = () => {
+            // Emoji subjects for passive voice practice
+            const emojiSubjects = [
+                { emoji: '🏠', subject: 'house' },
+                { emoji: '📚', subject: 'book' },
+                { emoji: '🚗', subject: 'car' },
+                { emoji: '🍕', subject: 'pizza' },
+                { emoji: '💰', subject: 'money' },
+                { emoji: '📱', subject: 'phone' },
+                { emoji: '🌸', subject: 'flower' },
+                { emoji: '⚽', subject: 'ball' },
+                { emoji: '🎵', subject: 'song' },
+                { emoji: '📧', subject: 'email' },
+                { emoji: '🍰', subject: 'cake' },
+                { emoji: '🏆', subject: 'trophy' },
+                { emoji: '📝', subject: 'letter' },
+                { emoji: '🎁', subject: 'gift' },
+                { emoji: '🔑', subject: 'key' },
+                { emoji: '🌟', subject: 'star' }
+            ];
+
+            // 12 English tenses
+            const tenses = [
+                'Simple Present',
+                'Present Progressive',
+                'Present Perfect',
+                'Present Perfect Progressive',
+                'Simple Past',
+                'Past Progressive',
+                'Past Perfect',
+                'Past Perfect Progressive',
+                'Simple Future',
+                'Future Progressive',
+                'Future Perfect',
+                'Future Perfect Progressive'
+            ];
+
+            // Additional grammar challenges
+            const additionalChallenges = [
+                { type: 'gerund', text: 'with Gerund', example: '(being + past participle)', icon: '🔄' },
+                { type: 'modal', text: 'with Modal', example: '(should/could/might + be + past participle)', icon: '💭' },
+                { type: 'question', text: 'as Question', example: '(Was/Were/Has/Will + subject + been + past participle?)', icon: '❓' },
+                { type: 'negative', text: 'in Negative', example: '(subject + be + not + past participle)', icon: '🚫' },
+                { type: 'continuous_passive', text: 'Continuous Passive', example: '(being + past participle)', icon: '⚡' },
+                { type: 'perfect_modal', text: 'Perfect Modal', example: '(should/could have been + past participle)', icon: '🎯' }
+            ];
+
+            const [selectedSubject, setSelectedSubject] = useState(null);
+            const [selectedTense, setSelectedTense] = useState(null);
+            const [additionalChallenge, setAdditionalChallenge] = useState(null);
+            const [isSpinningSubject, setIsSpinningSubject] = useState(false);
+            const [isSpinningTense, setIsSpinningTense] = useState(false);
+            
+            const subjectRouletteRef = useRef(null);
+            const tenseRouletteRef = useRef(null);
+
+            const spinRoulette = (type) => {
+                if (type === 'subject') {
+                    setIsSpinningSubject(true);
+                    setSelectedSubject(null);
+                    
+                    // Random spin duration between 2-4 seconds
+                    const duration = Math.random() * 2000 + 2000;
+                    
+                    setTimeout(() => {
+                        const randomIndex = Math.floor(Math.random() * emojiSubjects.length);
+                        setSelectedSubject(emojiSubjects[randomIndex]);
+                        setIsSpinningSubject(false);
+                    }, duration);
+                    
+                } else if (type === 'tense') {
+                    setIsSpinningTense(true);
+                    setSelectedTense(null);
+                    setAdditionalChallenge(null);
+                    
+                    const duration = Math.random() * 2000 + 2000;
+                    
+                    setTimeout(() => {
+                        const randomIndex = Math.floor(Math.random() * tenses.length);
+                        setSelectedTense(tenses[randomIndex]);
+                        
+                        // 50% chance to add an additional challenge
+                        if (Math.random() < 0.5) {
+                            const challengeIndex = Math.floor(Math.random() * additionalChallenges.length);
+                            setAdditionalChallenge(additionalChallenges[challengeIndex]);
+                        }
+                        
+                        setIsSpinningTense(false);
+                    }, duration);
+                }
+            };
+
+            const resetAll = () => {
+                setSelectedSubject(null);
+                setSelectedTense(null);
+                setAdditionalChallenge(null);
+                setIsSpinningSubject(false);
+                setIsSpinningTense(false);
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-12">
+                            <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
+                                Passive Voice Practice Roulettes
+                            </h1>
+                            <p className="text-xl text-blue-200 max-w-2xl mx-auto">
+                                Spin the roulettes to get random subjects and tenses for passive voice practice!
+                            </p>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                            {/* Subject Roulette */}
+                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl">
+                                <h2 className="text-3xl font-bold text-white text-center mb-8">
+                                    📱 Subject Roulette
+                                </h2>
+                                
+                                <div className="relative mb-8">
+                                    <div 
+                                        ref={subjectRouletteRef}
+                                        className={`w-80 h-80 mx-auto rounded-full border-8 border-yellow-400 bg-gradient-to-br from-yellow-300 to-orange-400 flex items-center justify-center relative overflow-hidden ${
+                                            isSpinningSubject ? 'animate-fast-spin' : ''
+                                        }`}
+                                    >
+                                        {!isSpinningSubject && selectedSubject ? (
+                                            <div className="text-center">
+                                                <div className="text-8xl mb-2">{selectedSubject.emoji}</div>
+                                                <div className="text-2xl font-bold text-gray-800 capitalize">
+                                                    {selectedSubject.subject}
+                                                </div>
+                                            </div>
+                                        ) : isSpinningSubject ? (
+                                            <div className="text-6xl">🎯</div>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="text-6xl mb-2">🎲</div>
+                                                <div className="text-xl font-bold text-gray-800">
+                                                    Click to Spin!
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        {/* Roulette pointer */}
+                                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+                                            <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-red-600"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => spinRoulette('subject')}
+                                    disabled={isSpinningSubject}
+                                    className="w-full py-4 px-8 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold text-xl rounded-xl hover:from-yellow-600 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg"
+                                >
+                                    {isSpinningSubject ? 'Spinning...' : 'Spin Subject Roulette!'}
+                                </button>
+                            </div>
+
+                            {/* Tense Roulette */}
+                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl">
+                                <h2 className="text-3xl font-bold text-white text-center mb-4">
+                                    ⏰ Grammar Challenge Roulette
+                                </h2>
+                                <p className="text-sm text-blue-200 text-center mb-6">
+                                    50% chance for extra challenge!
+                                </p>
+                                
+                                <div className="relative mb-8">
+                                    <div 
+                                        ref={tenseRouletteRef}
+                                        className={`w-80 h-80 mx-auto rounded-full border-8 border-green-400 bg-gradient-to-br from-green-300 to-teal-400 flex items-center justify-center relative overflow-hidden ${
+                                            isSpinningTense ? 'animate-fast-spin' : ''
+                                        }`}
+                                    >
+                                        {!isSpinningTense && selectedTense ? (
+                                            <div className="text-center px-4">
+                                                <div className="text-4xl mb-2">⚡</div>
+                                                <div className="text-base font-bold text-gray-800 leading-tight mb-2">
+                                                    {selectedTense}
+                                                </div>
+                                                {additionalChallenge && (
+                                                    <div className="mt-2 p-2 bg-red-500/30 rounded-lg">
+                                                        <div className="text-2xl">{additionalChallenge.icon}</div>
+                                                        <div className="text-sm font-bold text-red-800">
+                                                            {additionalChallenge.text}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : isSpinningTense ? (
+                                            <div className="text-6xl">⏳</div>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="text-6xl mb-2">🎲</div>
+                                                <div className="text-xl font-bold text-gray-800">
+                                                    Click to Spin!
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        {/* Roulette pointer */}
+                                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+                                            <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-red-600"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => spinRoulette('tense')}
+                                    disabled={isSpinningTense}
+                                    className="w-full py-4 px-8 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold text-xl rounded-xl hover:from-green-600 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg"
+                                >
+                                    {isSpinningTense ? 'Spinning...' : 'Spin Grammar Challenge!'}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Results Display */}
+                        {(selectedSubject || selectedTense || additionalChallenge) && (
+                            <div className="bg-white/15 backdrop-blur-md rounded-3xl p-8 border border-white/30 shadow-2xl">
+                                <h3 className="text-3xl font-bold text-white text-center mb-6">
+                                    🎯 Your Challenge
+                                </h3>
+                                <div className="text-center space-y-4">
+                                    {selectedSubject && (
+                                        <div className="bg-yellow-500/20 rounded-xl p-4">
+                                            <span className="text-2xl font-bold text-white">
+                                                Subject: {selectedSubject.emoji} {selectedSubject.subject}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {selectedTense && (
+                                        <div className="bg-green-500/20 rounded-xl p-4">
+                                            <span className="text-2xl font-bold text-white">
+                                                Tense: {selectedTense}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {additionalChallenge && (
+                                        <div className="bg-red-500/20 rounded-xl p-4 border-2 border-red-400/50">
+                                            <div className="flex items-center justify-center gap-2 mb-2">
+                                                <span className="text-2xl">{additionalChallenge.icon}</span>
+                                                <span className="text-xl font-bold text-white">
+                                                    Extra Challenge: {additionalChallenge.text}
+                                                </span>
+                                            </div>
+                                            <div className="text-sm text-red-200">
+                                                {additionalChallenge.example}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {selectedSubject && selectedTense && (
+                                        <div className="bg-purple-500/20 rounded-xl p-6 mt-6">
+                                            <p className="text-lg text-white mb-2">
+                                                <strong>Challenge:</strong> Create a passive voice sentence using:
+                                            </p>
+                                            <p className="text-xl font-bold text-yellow-300">
+                                                "{selectedSubject.subject}" in "{selectedTense}"
+                                                {additionalChallenge && <span className="text-red-300"> + {additionalChallenge.text}</span>}
+                                            </p>
+                                            
+                                            {/* Example suggestions */}
+                                            <div className="mt-4 p-4 bg-blue-500/20 rounded-lg">
+                                                <p className="text-sm text-blue-200 mb-2"><strong>Example patterns:</strong></p>
+                                                <ul className="text-xs text-blue-100 space-y-1">
+                                                    {!additionalChallenge && <li>• "The {selectedSubject.subject} was built" (Simple Past)</li>}
+                                                    {additionalChallenge?.type === 'gerund' && <li>• "Being built, the {selectedSubject.subject}..." (Gerund)</li>}
+                                                    {additionalChallenge?.type === 'modal' && <li>• "The {selectedSubject.subject} should be built" (Modal)</li>}
+                                                    {additionalChallenge?.type === 'question' && <li>• "Was the {selectedSubject.subject} built?" (Question)</li>}
+                                                    {additionalChallenge?.type === 'negative' && <li>• "The {selectedSubject.subject} was not built" (Negative)</li>}
+                                                    {additionalChallenge?.type === 'continuous_passive' && <li>• "The {selectedSubject.subject} is being built" (Continuous Passive)</li>}
+                                                    {additionalChallenge?.type === 'perfect_modal' && <li>• "The {selectedSubject.subject} should have been built" (Perfect Modal)</li>}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Control Buttons */}
+                        <div className="flex justify-center gap-4 mt-8">
+                            <button
+                                onClick={() => {
+                                    spinRoulette('subject');
+                                    spinRoulette('tense');
+                                }}
+                                disabled={isSpinningSubject || isSpinningTense}
+                                className="py-3 px-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-xl hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg"
+                            >
+                                🎲 Spin Both!
+                            </button>
+                            
+                            <button
+                                onClick={resetAll}
+                                className="py-3 px-8 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-bold text-lg rounded-xl hover:from-gray-700 hover:to-gray-800 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                            >
+                                🔄 Reset All
+                            </button>
+                        </div>
+
+                        {/* Instructions */}
+                        <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl mt-8">
+                            <h4 className="text-2xl font-bold text-white text-center mb-4">
+                                📖 How to Use
+                            </h4>
+                            <div className="text-white space-y-2">
+                                <p><strong>1.</strong> Spin either roulette individually or both together</p>
+                                <p><strong>2.</strong> The Grammar Challenge has a 50% chance of adding extra difficulty!</p>
+                                <p><strong>3.</strong> Use the results to practice creating passive voice sentences</p>
+                                <p><strong>4.</strong> Examples:</p>
+                                <div className="ml-4 text-sm space-y-1">
+                                    <p>• "House + Present Perfect" → "The house has been built"</p>
+                                    <p>• "Book + Simple Past + Question" → "Was the book read?"</p>
+                                    <p>• "Car + Present Progressive + Modal" → "The car should be being repaired"</p>
+                                    <p>• "Pizza + Past Perfect + Gerund" → "Being delivered, the pizza was cold"</p>
+                                </div>
+                                <p><strong>5.</strong> Challenge yourself with different combinations!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<PassiveVoiceRoulettes />, document.getElementById('root'));
+    </script>
+</body>
+</html>
