@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerund After Preposition Practice Roulette</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(3600deg); }
+        }
+        .animate-fast-spin {
+            animation: spin 0.1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef } = React;
+
+        const GerundPrepositionRoulette = () => {
+            // Prepositions that take gerunds with example contexts
+            const prepositions = [
+                { prep: 'after', context: 'sequence', example: 'After finishing homework, I went out', icon: '⏰' },
+                { prep: 'before', context: 'sequence', example: 'Before leaving, check your bag', icon: '⏳' },
+                { prep: 'by', context: 'method', example: 'He succeeded by working hard', icon: '🎯' },
+                { prep: 'without', context: 'absence', example: 'She left without saying goodbye', icon: '🚫' },
+                { prep: 'instead of', context: 'alternative', example: 'Instead of driving, take the bus', icon: '🔄' },
+                { prep: 'in addition to', context: 'extra', example: 'In addition to studying, she works', icon: '➕' },
+                { prep: 'because of', context: 'cause', example: 'Because of arriving late, I missed it', icon: '❗' },
+                { prep: 'despite', context: 'contrast', example: 'Despite being tired, he continued', icon: '💪' },
+                { prep: 'while', context: 'simultaneous', example: 'While cooking, she listened to music', icon: '🎵' },
+                { prep: 'upon', context: 'immediate', example: 'Upon arriving, call me', icon: '📞' },
+                { prep: 'for', context: 'purpose/reason', example: 'This tool is for cutting wood', icon: '🔧' },
+                { prep: 'about', context: 'topic', example: 'She talked about traveling abroad', icon: '💭' },
+                { prep: 'of', context: 'possession/relation', example: 'He dreams of becoming famous', icon: '✨' },
+                { prep: 'from', context: 'prevention', example: 'This prevents you from making mistakes', icon: '🛡️' },
+                { prep: 'in', context: 'involvement', example: 'She succeeded in passing the exam', icon: '🎓' },
+                { prep: 'on', context: 'focus/insistence', example: 'He insists on doing it himself', icon: '👆' }
+            ];
+
+            // Action verbs for gerund practice
+            const actionVerbs = [
+                { verb: 'study', emoji: '📚', category: 'education' },
+                { verb: 'cook', emoji: '👨‍🍳', category: 'daily' },
+                { verb: 'exercise', emoji: '🏃‍♂️', category: 'health' },
+                { verb: 'travel', emoji: '✈️', category: 'leisure' },
+                { verb: 'work', emoji: '💼', category: 'professional' },
+                { verb: 'sleep', emoji: '😴', category: 'daily' },
+                { verb: 'drive', emoji: '🚗', category: 'transport' },
+                { verb: 'read', emoji: '📖', category: 'education' },
+                { verb: 'write', emoji: '✍️', category: 'creative' },
+                { verb: 'dance', emoji: '💃', category: 'entertainment' },
+                { verb: 'sing', emoji: '🎤', category: 'entertainment' },
+                { verb: 'swim', emoji: '🏊‍♀️', category: 'sport' },
+                { verb: 'paint', emoji: '🎨', category: 'creative' },
+                { verb: 'shop', emoji: '🛒', category: 'daily' },
+                { verb: 'clean', emoji: '🧹', category: 'daily' },
+                { verb: 'learn', emoji: '🧠', category: 'education' },
+                { verb: 'teach', emoji: '👩‍🏫', category: 'professional' },
+                { verb: 'play', emoji: '🎮', category: 'entertainment' },
+                { verb: 'run', emoji: '🏃', category: 'sport' },
+                { verb: 'speak', emoji: '🗣️', category: 'communication' }
+            ];
+
+            // Sentence starters to make practice more interesting
+            const sentenceStarters = [
+                { starter: 'I am interested in', type: 'interest', icon: '😊' },
+                { starter: 'She succeeded in', type: 'achievement', icon: '🏆' },
+                { starter: 'He is good at', type: 'skill', icon: '👍' },
+                { starter: 'They are excited about', type: 'emotion', icon: '🎉' },
+                { starter: 'We are tired of', type: 'fatigue', icon: '😩' },
+                { starter: 'You are responsible for', type: 'duty', icon: '📋' },
+                { starter: 'I am worried about', type: 'concern', icon: '😟' },
+                { starter: 'She is capable of', type: 'ability', icon: '💪' },
+                { starter: 'He is guilty of', type: 'blame', icon: '😔' },
+                { starter: 'They are proud of', type: 'pride', icon: '🦚' },
+                { starter: 'We are used to', type: 'habit', icon: '🔄' },
+                { starter: 'You should focus on', type: 'advice', icon: '🎯' },
+                { starter: 'I am thinking about', type: 'consideration', icon: '🤔' },
+                { starter: 'She is afraid of', type: 'fear', icon: '😰' },
+                { starter: 'He is fond of', type: 'liking', icon: '❤️' },
+                { starter: 'They are looking forward to', type: 'anticipation', icon: '👀' }
+            ];
+
+            const [selectedPreposition, setSelectedPreposition] = useState(null);
+            const [selectedVerb, setSelectedVerb] = useState(null);
+            const [selectedStarter, setSelectedStarter] = useState(null);
+            const [isSpinningPrep, setIsSpinningPrep] = useState(false);
+            const [isSpinningVerb, setIsSpinningVerb] = useState(false);
+            const [isSpinningStarter, setIsSpinningStarter] = useState(false);
+
+            const spinRoulette = (type) => {
+                const duration = Math.random() * 2000 + 2000;
+                
+                if (type === 'preposition') {
+                    setIsSpinningPrep(true);
+                    setSelectedPreposition(null);
+                    
+                    setTimeout(() => {
+                        const randomIndex = Math.floor(Math.random() * prepositions.length);
+                        setSelectedPreposition(prepositions[randomIndex]);
+                        setIsSpinningPrep(false);
+                    }, duration);
+                    
+                } else if (type === 'verb') {
+                    setIsSpinningVerb(true);
+                    setSelectedVerb(null);
+                    
+                    setTimeout(() => {
+                        const randomIndex = Math.floor(Math.random() * actionVerbs.length);
+                        setSelectedVerb(actionVerbs[randomIndex]);
+                        setIsSpinningVerb(false);
+                    }, duration);
+                    
+                } else if (type === 'starter') {
+                    setIsSpinningStarter(true);
+                    setSelectedStarter(null);
+                    
+                    setTimeout(() => {
+                        const randomIndex = Math.floor(Math.random() * sentenceStarters.length);
+                        setSelectedStarter(sentenceStarters[randomIndex]);
+                        setIsSpinningStarter(false);
+                    }, duration);
+                }
+            };
+
+            const resetAll = () => {
+                setSelectedPreposition(null);
+                setSelectedVerb(null);
+                setSelectedStarter(null);
+                setIsSpinningPrep(false);
+                setIsSpinningVerb(false);
+                setIsSpinningStarter(false);
+            };
+
+            const generateExample = () => {
+                if (selectedStarter && selectedVerb) {
+                    return `${selectedStarter.starter} ${selectedVerb.verb}ing...`;
+                } else if (selectedPreposition && selectedVerb) {
+                    return `${selectedPreposition.prep} ${selectedVerb.verb}ing...`;
+                }
+                return '';
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 p-8">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-12">
+                            <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
+                                🔄 Gerund After Preposition Practice
+                            </h1>
+                            <p className="text-xl text-cyan-200 max-w-3xl mx-auto">
+                                Master the art of using gerunds after prepositions! Spin the roulettes for challenging combinations.
+                            </p>
+                        </div>
+
+                        <div className="grid lg:grid-cols-3 gap-6 mb-8">
+                            {/* Preposition Roulette */}
+                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl">
+                                <h2 className="text-2xl font-bold text-white text-center mb-6">
+                                    📝 Preposition Wheel
+                                </h2>
+                                
+                                <div className="relative mb-6">
+                                    <div 
+                                        className={`w-64 h-64 mx-auto rounded-full border-6 border-blue-400 bg-gradient-to-br from-blue-300 to-indigo-400 flex items-center justify-center relative overflow-hidden ${
+                                            isSpinningPrep ? 'animate-fast-spin' : ''
+                                        }`}
+                                    >
+                                        {!isSpinningPrep && selectedPreposition ? (
+                                            <div className="text-center px-2">
+                                                <div className="text-4xl mb-2">{selectedPreposition.icon}</div>
+                                                <div className="text-lg font-bold text-gray-800">
+                                                    {selectedPreposition.prep}
+                                                </div>
+                                                <div className="text-xs text-gray-700 mt-1">
+                                                    {selectedPreposition.context}
+                                                </div>
+                                            </div>
+                                        ) : isSpinningPrep ? (
+                                            <div className="text-5xl">🎲</div>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="text-5xl mb-2">📝</div>
+                                                <div className="text-lg font-bold text-gray-800">
+                                                    Spin Me!
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+                                            <div className="w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-red-600"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => spinRoulette('preposition')}
+                                    disabled={isSpinningPrep}
+                                    className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold text-lg rounded-xl hover:from-blue-600 hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg"
+                                >
+                                    {isSpinningPrep ? 'Spinning...' : 'Spin Preposition!'}
+                                </button>
+                            </div>
+
+                            {/* Verb Roulette */}
+                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl">
+                                <h2 className="text-2xl font-bold text-white text-center mb-6">
+                                    🎭 Action Verb Wheel
+                                </h2>
+                                
+                                <div className="relative mb-6">
+                                    <div 
+                                        className={`w-64 h-64 mx-auto rounded-full border-6 border-green-400 bg-gradient-to-br from-green-300 to-emerald-400 flex items-center justify-center relative overflow-hidden ${
+                                            isSpinningVerb ? 'animate-fast-spin' : ''
+                                        }`}
+                                    >
+                                        {!isSpinningVerb && selectedVerb ? (
+                                            <div className="text-center">
+                                                <div className="text-6xl mb-2">{selectedVerb.emoji}</div>
+                                                <div className="text-xl font-bold text-gray-800">
+                                                    {selectedVerb.verb}
+                                                </div>
+                                                <div className="text-sm text-gray-700 mt-1 capitalize">
+                                                    {selectedVerb.category}
+                                                </div>
+                                            </div>
+                                        ) : isSpinningVerb ? (
+                                            <div className="text-5xl">🎯</div>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="text-5xl mb-2">🎭</div>
+                                                <div className="text-lg font-bold text-gray-800">
+                                                    Spin Me!
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+                                            <div className="w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-red-600"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => spinRoulette('verb')}
+                                    disabled={isSpinningVerb}
+                                    className="w-full py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold text-lg rounded-xl hover:from-green-600 hover:to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg"
+                                >
+                                    {isSpinningVerb ? 'Spinning...' : 'Spin Action Verb!'}
+                                </button>
+                            </div>
+
+                            {/* Sentence Starter Roulette */}
+                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl">
+                                <h2 className="text-2xl font-bold text-white text-center mb-6">
+                                    💬 Sentence Starter Wheel
+                                </h2>
+                                
+                                <div className="relative mb-6">
+                                    <div 
+                                        className={`w-64 h-64 mx-auto rounded-full border-6 border-purple-400 bg-gradient-to-br from-purple-300 to-pink-400 flex items-center justify-center relative overflow-hidden ${
+                                            isSpinningStarter ? 'animate-fast-spin' : ''
+                                        }`}
+                                    >
+                                        {!isSpinningStarter && selectedStarter ? (
+                                            <div className="text-center px-2">
+                                                <div className="text-4xl mb-2">{selectedStarter.icon}</div>
+                                                <div className="text-sm font-bold text-gray-800 leading-tight">
+                                                    {selectedStarter.starter}
+                                                </div>
+                                                <div className="text-xs text-gray-700 mt-1 capitalize">
+                                                    {selectedStarter.type}
+                                                </div>
+                                            </div>
+                                        ) : isSpinningStarter ? (
+                                            <div className="text-5xl">💫</div>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="text-5xl mb-2">💬</div>
+                                                <div className="text-lg font-bold text-gray-800">
+                                                    Spin Me!
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+                                            <div className="w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-red-600"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => spinRoulette('starter')}
+                                    disabled={isSpinningStarter}
+                                    className="w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-lg rounded-xl hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg"
+                                >
+                                    {isSpinningStarter ? 'Spinning...' : 'Spin Sentence Starter!'}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Results Display */}
+                        {(selectedPreposition || selectedVerb || selectedStarter) && (
+                            <div className="bg-white/15 backdrop-blur-md rounded-3xl p-8 border border-white/30 shadow-2xl mb-8">
+                                <h3 className="text-3xl font-bold text-white text-center mb-6">
+                                    🎯 Your Gerund Challenge
+                                </h3>
+                                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                                    {selectedPreposition && (
+                                        <div className="bg-blue-500/20 rounded-xl p-4 text-center">
+                                            <div className="text-3xl mb-2">{selectedPreposition.icon}</div>
+                                            <div className="text-xl font-bold text-white mb-1">
+                                                {selectedPreposition.prep}
+                                            </div>
+                                            <div className="text-sm text-blue-200 mb-2 capitalize">
+                                                {selectedPreposition.context}
+                                            </div>
+                                            <div className="text-xs text-blue-100 italic">
+                                                "{selectedPreposition.example}"
+                                            </div>
+                                        </div>
+                                    )}
+                                    {selectedVerb && (
+                                        <div className="bg-green-500/20 rounded-xl p-4 text-center">
+                                            <div className="text-5xl mb-2">{selectedVerb.emoji}</div>
+                                            <div className="text-xl font-bold text-white mb-1">
+                                                {selectedVerb.verb} → {selectedVerb.verb}ing
+                                            </div>
+                                            <div className="text-sm text-green-200 capitalize">
+                                                {selectedVerb.category} activity
+                                            </div>
+                                        </div>
+                                    )}
+                                    {selectedStarter && (
+                                        <div className="bg-purple-500/20 rounded-xl p-4 text-center">
+                                            <div className="text-3xl mb-2">{selectedStarter.icon}</div>
+                                            <div className="text-lg font-bold text-white mb-1">
+                                                {selectedStarter.starter}
+                                            </div>
+                                            <div className="text-sm text-purple-200 capitalize">
+                                                {selectedStarter.type} context
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {generateExample() && (
+                                    <div className="bg-gradient-to-r from-cyan-500/20 to-teal-500/20 rounded-xl p-6 border border-cyan-400/30">
+                                        <h4 className="text-xl font-bold text-white mb-3 text-center">
+                                            🎨 Practice Sentence
+                                        </h4>
+                                        <div className="text-2xl text-center font-bold text-cyan-300 mb-4">
+                                            "{generateExample()}"
+                                        </div>
+                                        <div className="grid md:grid-cols-2 gap-4 text-sm">
+                                            <div className="bg-white/10 rounded-lg p-3">
+                                                <div className="font-bold text-cyan-200 mb-2">Grammar Rule:</div>
+                                                <div className="text-white">
+                                                    Preposition + Gerund (verb + -ing)
+                                                </div>
+                                            </div>
+                                            <div className="bg-white/10 rounded-lg p-3">
+                                                <div className="font-bold text-cyan-200 mb-2">Your Task:</div>
+                                                <div className="text-white">
+                                                    Complete the sentence with context and details!
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Control Buttons */}
+                        <div className="flex justify-center gap-4 mb-8">
+                            <button
+                                onClick={() => {
+                                    spinRoulette('preposition');
+                                    spinRoulette('verb');
+                                    spinRoulette('starter');
+                                }}
+                                disabled={isSpinningPrep || isSpinningVerb || isSpinningStarter}
+                                className="py-3 px-8 bg-gradient-to-r from-cyan-600 to-teal-600 text-white font-bold text-lg rounded-xl hover:from-cyan-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200 shadow-lg"
+                            >
+                                🎲 Spin All Three!
+                            </button>
+                            
+                            <button
+                                onClick={resetAll}
+                                className="py-3 px-8 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-bold text-lg rounded-xl hover:from-gray-700 hover:to-gray-800 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                            >
+                                🔄 Reset All
+                            </button>
+                        </div>
+
+                        {/* Instructions and Examples */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl">
+                                <h4 className="text-2xl font-bold text-white text-center mb-4">
+                                    📖 How to Practice
+                                </h4>
+                                <div className="text-white space-y-3 text-sm">
+                                    <p><strong>1.</strong> Spin individual wheels or all three together</p>
+                                    <p><strong>2.</strong> Create complete sentences using the gerund form</p>
+                                    <p><strong>3.</strong> Remember: Preposition + Verb-ing (gerund)</p>
+                                    <p><strong>4.</strong> Use the sentence starters for natural contexts</p>
+                                    <p><strong>5.</strong> Practice different combinations for fluency</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl">
+                                <h4 className="text-2xl font-bold text-white text-center mb-4">
+                                    ✨ Example Sentences
+                                </h4>
+                                <div className="text-white space-y-2 text-sm">
+                                    <p><strong>•</strong> "She succeeded in <em>passing</em> the exam."</p>
+                                    <p><strong>•</strong> "I'm interested in <em>learning</em> Spanish."</p>
+                                    <p><strong>•</strong> "After <em>finishing</em> work, let's meet."</p>
+                                    <p><strong>•</strong> "He's good at <em>solving</em> problems."</p>
+                                    <p><strong>•</strong> "Instead of <em>driving</em>, we walked."</p>
+                                    <p><strong>•</strong> "They're excited about <em>traveling</em>."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<GerundPrepositionRoulette />, document.getElementById('root'));
+    </script>
+</body>
+</html>
